@@ -1,0 +1,40 @@
+{
+  "description" : "Suit description.",
+  "executor" : "GO",
+  "vars" :  {
+    "description" : "example"
+  },
+  "tests" : [
+    {
+      "label" : "Test label",
+      "command" : "localhost:8080/some/endpoint",
+      "assertions" : [
+        {
+          "var" : "body-var",
+          "or" : [
+            {"gte" : 200},
+            {"lte" : 100}
+          ]
+        },
+        {
+          "var" : "body-var",
+          "or" : [
+            {
+              "and" : [
+                {
+                  "gte" : 70
+                },
+                {
+                  "lte" : 120
+                }
+              ]
+            },
+            {
+              "lte" : 100
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

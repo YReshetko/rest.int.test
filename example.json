@@ -1,0 +1,87 @@
+{
+  "description" : "Suit description.",
+  "executor" : "CURL",
+  "vars" :  {
+  		"description" : "example",
+  		"host" : {
+  			"address":"localhost",
+  			"port":"1010",
+  			"timeouts" : {
+  				"eachrequest":100,
+  				"total":10000.356
+  			}
+  		},
+  		"endpoints" : ["/user", "/account", "/images"],
+  		"users" : [
+  			{
+  				"name":"John",
+  				"surname":"Gardner"
+  			},
+  			{
+  				"name":"Simon",
+  				"surname":"Hutton"
+  			}
+  		]
+  },
+  "tests" : [
+    {
+      "label" : "Test label",
+      "command" : "localhost:8080/some/endpoint",
+      "extracts" : [
+        {
+          "header" : "Header name",
+          "var" : "header-var"
+        },
+        {
+          "body" : "some.body.param",
+          "var" : "body-var"
+        }
+      ],
+      "assertions" : [
+        {
+          "var" : "header-var",
+          "eq" : "OK"
+        },
+        {
+          "var" : "header-var",
+          "match" : "match to some reg exp [0-9a-z]+"
+        },
+        {
+          "var" : "body-var",
+          "lt" : 100
+        },
+        {
+          "var" : "body-var",
+          "gt" : 100
+        },
+        {
+          "var" : "body-var",
+          "lte" : 100
+        },
+        {
+          "var" : "body-var",
+          "gte" : 100
+        },
+        {
+          "var" : "body-var",
+          "and" : [
+            {"gte" : 100},
+            {"lte" : 200}
+          ]
+        },
+        {
+          "var" : "body-var",
+          "or" : [
+            {"gte" : 200},
+            {"lte" : 100}
+          ]
+        },
+        {
+          "var" : "body-var",
+          "lte" : 100,
+          "gte" : 100
+        }
+      ]
+    }
+  ]
+}
