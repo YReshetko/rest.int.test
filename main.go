@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"rest.int.test/util"
+	"github.com/YReshetko/rest.int.test/util"
 )
 
 func main() {

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"rest.int.test/util"
+	"github.com/YReshetko/rest.int.test/util"
 	"strconv"
 )
 

@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"rest.int.test/util"
+	"github.com/YReshetko/rest.int.test/util"
 	"strings"
 )
 

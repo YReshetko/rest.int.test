@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
-	"rest.int.test/util"
+	"github.com/YReshetko/rest.int.test/util"
 	"strings"
 )
 
