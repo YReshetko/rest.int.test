@@ -116,6 +116,7 @@ func (s Suit) Run() (*SuitResult, error) {
 	suitTotalResult := true
 	for i, test := range s.Tests {
 		command := filterStringWithTokens(test.Command, scope)
+		//log.Println("Run command:", command)
 		head, body, duration := commandRunner.Run(command)
 		extracts := test.Extracts
 		for _, extract := range extracts {
