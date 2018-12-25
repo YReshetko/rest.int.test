@@ -1,14 +1,12 @@
 package suit
 
-import "github.com/YReshetko/rest.int.test/util"
-
 type Result struct {
 	SuitResult *SuitResult
 	FileName   string
 	Err        error
 }
 
-func Run(iterator util.SuitIterator, printer util.ResultPrinter) []*Result {
+func Run(iterator SuitIterator, printer ResultPrinter) []*Result {
 	results := []*Result{}
 	for iterator.HasNext() {
 		suit, fileName := iterator.Next()
