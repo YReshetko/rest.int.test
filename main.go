@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	s, err := load("test_example.json")
+	s, err := load("example.json")
+	//s, err := load("test_example.json")
 
 	if err != nil {
 		panic(err)

@@ -18,11 +18,11 @@ func TestAssertion_Assert_Eq(t *testing.T) {
 	m := map[string]string{
 		"some-var": "OK",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "FAIL",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Lt_Int(t *testing.T) {
@@ -38,15 +38,15 @@ func TestAssertion_Assert_Lt_Int(t *testing.T) {
 	m := map[string]string{
 		"some-var": "99",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 	m = map[string]string{
 		"some-var": "100.01",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Lt_Float(t *testing.T) {
@@ -62,15 +62,15 @@ func TestAssertion_Assert_Lt_Float(t *testing.T) {
 	m := map[string]string{
 		"some-var": "100.00",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100.00001",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 	m = map[string]string{
 		"some-var": "100.00002",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Lte_Int(t *testing.T) {
@@ -86,15 +86,15 @@ func TestAssertion_Assert_Lte_Int(t *testing.T) {
 	m := map[string]string{
 		"some-var": "100",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "10",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "101",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Lte_Float(t *testing.T) {
@@ -110,16 +110,16 @@ func TestAssertion_Assert_Lte_Float(t *testing.T) {
 	m := map[string]string{
 		"some-var": "100.0001",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 
 	m = map[string]string{
 		"some-var": "10.99999",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100.0002",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Gt_Int(t *testing.T) {
@@ -135,11 +135,11 @@ func TestAssertion_Assert_Gt_Int(t *testing.T) {
 	m := map[string]string{
 		"some-var": "101",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "99",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Gt_Float(t *testing.T) {
@@ -155,15 +155,15 @@ func TestAssertion_Assert_Gt_Float(t *testing.T) {
 	m := map[string]string{
 		"some-var": "100.00002",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100.00001",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 	m = map[string]string{
 		"some-var": "100",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Gte_Int(t *testing.T) {
@@ -179,15 +179,15 @@ func TestAssertion_Assert_Gte_Int(t *testing.T) {
 	m := map[string]string{
 		"some-var": "100",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "101",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "99",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Gte_Float(t *testing.T) {
@@ -203,15 +203,15 @@ func TestAssertion_Assert_Gte_Float(t *testing.T) {
 	m := map[string]string{
 		"some-var": "100.00001",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100.00002",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100.00000",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Lt_Gt(t *testing.T) {
@@ -231,19 +231,19 @@ func TestAssertion_Assert_Lt_Gt(t *testing.T) {
 	m := map[string]string{
 		"some-var": "91",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "99",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 	m = map[string]string{
 		"some-var": "90",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Lte_Gte(t *testing.T) {
@@ -263,27 +263,27 @@ func TestAssertion_Assert_Lte_Gte(t *testing.T) {
 	m := map[string]string{
 		"some-var": "91",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "99",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "90",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "101",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 	m = map[string]string{
 		"some-var": "89",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_And(t *testing.T) {
@@ -308,27 +308,27 @@ func TestAssertion_Assert_And(t *testing.T) {
 	m := map[string]string{
 		"some-var": "91",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "99",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "90",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "101",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 	m = map[string]string{
 		"some-var": "89",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 func TestAssertion_Assert_Or(t *testing.T) {
@@ -353,27 +353,27 @@ func TestAssertion_Assert_Or(t *testing.T) {
 	m := map[string]string{
 		"some-var": "50",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "49",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "100",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "101",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "51",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 	m = map[string]string{
 		"some-var": "99",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
 
@@ -390,16 +390,16 @@ func TestAssertion_Assert_Match(t *testing.T) {
 	m := map[string]string{
 		"some-var": "152",
 	}
-	runTest(assert, m, t, true)
+	runTest(assert, m, t, true, false)
 	m = map[string]string{
 		"some-var": "1b6",
 	}
-	runTest(assert, m, t, false)
+	runTest(assert, m, t, false, true)
 }
 
-func runTest(assertion Assertion, m map[string]string, t *testing.T, expected bool) {
-	result, err := assertion.Assert(m)
-	if err != nil {
+func runTest(assertion Assertion, m map[string]string, t *testing.T, expected bool, expectError bool) {
+	result, err:= assertion.Assert(m)
+	if !expectError && err != nil {
 		t.Errorf(fmt.Sprintf("Should'n be any errors like %v during assert execution\n", err))
 		t.FailNow()
 	}

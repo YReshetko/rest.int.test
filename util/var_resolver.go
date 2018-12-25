@@ -17,7 +17,7 @@ type items map[string]*item
 // For example we have next vars:
 // vars[key-1]=value 1 and ${key-2}
 // vars[key-2]=value 2
-// After the resolver all tokens like ${key-2} hve to be replaced with actual value from this map
+// After the resolver all tokens like ${key-2} have to be replaced with actual value from this map
 // NOTE 1: cyclic dependency couldn't be resolved (function returns error)
 // NOTE 2: if initially vars map doesn't contain some key which used in token the function returns error
 func Resolve(initial map[string]string) (map[string]string, error) {

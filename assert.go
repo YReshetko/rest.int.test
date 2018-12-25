@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"regexp"
 	"github.com/YReshetko/rest.int.test/util"
+	"regexp"
 	"strconv"
 )
 
@@ -33,6 +33,17 @@ var conditionTypeNames = map[string]conditionType{
 	"or":    or,
 }
 
+var conditionNameTypes = map[conditionType]string{
+	eq:    "eq",
+	match: "match",
+	lt:    "lt",
+	gt:    "gt",
+	lte:   "lte",
+	gte:   "gte",
+	and:   "and",
+	or:    "or",
+}
+
 type Assertion struct {
 	variable   string `json:"var"`
 	conditions []Condition
@@ -42,6 +53,43 @@ type Condition struct {
 	condType      conditionType
 	value         string
 	subConditions []Condition
+}
+
+type assertionError struct {
+	failedCondition *Condition
+	reason          string
+	actualValue     string
+	checkedVariable string
+}
+
+func (err assertionError) Error() string {
+	out := ""
+	if err.reason != "" {
+		out = out + "Reason: " + err.reason + ";\n"
+	}
+	if err.failedCondition != nil {
+		out = out + "On: " + err.failedCondition.String() + ";\n"
+	}
+	if err.checkedVariable != "" {
+		out = out + "Scope variable name: " + err.checkedVariable + ";\n"
+	}
+	if err.actualValue != "" {
+		out = out + "Actual value: " + err.actualValue + ";\n"
+	}
+	return out
+}
+
+func (cond Condition) String() string {
+	out := "Condition: " + conditionNameTypes[cond.condType] + ", Expected value: " + cond.value
+	if len(cond.subConditions) > 0 {
+		out = out + ", Sub-conditions: {"
+		for _, v := range cond.subConditions{
+			out = out + v.String() + "; "
+		}
+		out = out[:len(out)-2] + "}"
+	}
+	out = out + "."
+	return out
 }
 
 func (a Assertion) MarshalJSON() ([]byte, error) {
@@ -116,18 +164,29 @@ func parseConditions(m map[string]interface{}) ([]Condition, error) {
 func (a Assertion) Assert(scope map[string]string) (bool, error) {
 	value, ok := scope[a.variable]
 	if !ok {
-		return false, errors.New(fmt.Sprintf("Variable %s was not found in current scope", a.variable))
+		return false, &assertionError{
+			reason: "Variable was not found in current scope",
+			checkedVariable: a.variable,
+		}
 	}
-	return checkConditions(value, a.conditions), nil
+	return checkConditions(value, a.conditions)
 }
 
-func checkConditions(value string, conditions []Condition) bool {
+func checkConditions(value string, conditions []Condition) (bool, error) {
 	result := true
 	for _, condition := range conditions {
 		fn := condition.condType.getCondFunc()
-		result = result && fn(value, condition.value, condition.subConditions)
+		currentResult := fn(value, condition.value, condition.subConditions)
+		result = result && currentResult
+		if !currentResult {
+			return result, &assertionError{
+				reason: "Assertion failed",
+				actualValue: value,
+				failedCondition: &condition,
+			}
+		}
 	}
-	return result
+	return result, nil
 }
 
 func (typ conditionType) getCondFunc() func(actualValue string, expectedValue string, subConditions []Condition) bool {
@@ -145,7 +204,8 @@ func (typ conditionType) getCondFunc() func(actualValue string, expectedValue st
 		return func(actualValue string, expectedValue string, subConditions []Condition) bool {
 			result := false
 			for _, condition := range subConditions {
-				result = result || checkConditions(actualValue, []Condition{condition})
+				interimResult, _ := checkConditions(actualValue, []Condition{condition})
+				result = result || interimResult
 			}
 			return result
 		}
@@ -153,7 +213,8 @@ func (typ conditionType) getCondFunc() func(actualValue string, expectedValue st
 		return func(actualValue string, expectedValue string, subConditions []Condition) bool {
 			result := true
 			for _, condition := range subConditions {
-				result = result && checkConditions(actualValue, []Condition{condition})
+				interimResult, _ := checkConditions(actualValue, []Condition{condition})
+				result = result && interimResult
 			}
 			return result
 		}
@@ -181,11 +242,11 @@ func (typ conditionType) getCondFunc() func(actualValue string, expectedValue st
 		}
 		return func(actualValue string, expectedValue string, subConditions []Condition) bool {
 			actual, err := strconv.ParseFloat(actualValue, 32)
-			if err!=nil {
+			if err != nil {
 				panic("Compared non numeric types")
 			}
 			expected, err := strconv.ParseFloat(expectedValue, 32)
-			if err!=nil {
+			if err != nil {
 				panic("Compared non numeric types")
 			}
 			return floatFn(actual, expected)
