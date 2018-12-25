@@ -1,11 +1,11 @@
-#REST application integration test tool
+# REST application integration test tool
 
-##Use case
+## Use case
 
 When you need to test REST API with dependent calls of different endpoints, collect information from HTTP header and/or body (*supported only json*) of the responses and use in the next calls.
 You can simply define the calls in one file with specific json structure (the structure will be described below) and run it with the tool.  
 
-##Simple usage
+## Simple usage
 
 To use the tool your root folder with test cases has to be in the same directory as the tool for example:
 ```
@@ -24,7 +24,7 @@ To run all the tests you need to call the command:
 ```
 In this case the application will scan all folders and sub folders into test_cases, collect all json files and try to run the suites inside the files if they have appropriate format
 
-##Docker usage
+## Docker usage
 
 There is a docker image into public repository
 ```
@@ -56,7 +56,7 @@ Full example of running docker:
 docker run --rm -v ~/go/src/project/tests:/usr/local/bin/tests --net app-network-dev --link some-service:some-service-alias yrashetska/intest:latest -suits tests
 ```
 
-##Test suits
+## Test suits
 
 Basically one test suite restricted by file scope. What that means. Each file contains scope of variables and several tests. All tests in one file share the variable scope and can fill it up.
 Besides that each test contains extract section (to fill up the variables scope) and asserts section where can be checked some simple conditions within response data (which was expracted before)
@@ -96,7 +96,7 @@ NOTE:
 - *"description" : "Suit description."* - Suit description - shown on test report
 - *"label" : "Test label"* - Test description - shown on test report
 
-###Variables
+### Variables
 1. The first thing which we have to know about variables is that it's will be parsed into flat map:
 ```json
 {
@@ -161,7 +161,7 @@ map["b.sub-2"] = "one + two = three"
 3. When some variable is populated in extracts section of some test previous value will be lost. Even if there is no corresponding field in header or body
 4. Variables are replaced only in command and can't be used in assertions (maybe it it's implemented later)
 
-###Extracts
+### Extracts
 To extract some field from header we just need to specify header name and variable where we need to extract the value:
 ```json
 {
@@ -195,7 +195,7 @@ To extract second element of inner array we can set next extract option:
 }  
 ```
 
-###Asserts
+### Asserts
 The asserts can be done only on current variable scope. Asserts for the test executed directly after command and all extracts (to use up to date variable scope)
 Available assertions:
 ```json
@@ -257,7 +257,7 @@ Available assertions:
 - *or* - logical operator, one of condition has to be true
 - *and* - logical operator, all of conditions must be true
 
-#TODO:
+# TODO:
 - [ ] Add filters to run only few test suites
 - [ ] Test report in HTML by flag
 - [ ] Not only curl runner (I'm not sure if it's really needed) 
