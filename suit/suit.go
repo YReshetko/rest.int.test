@@ -156,8 +156,9 @@ func (e Extract) process(scope, head, body map[string]string) {
 		value := head[e.Header]
 		scope[e.Variable] = value
 	} else if e.Body != "" {
-		value := body[e.Header]
+		value := body[e.Body]
 		scope[e.Variable] = value
+		//log.Printf("Extract %s = %s", e.Body, value)
 	} else {
 		panic("Nothing to extract")
 	}

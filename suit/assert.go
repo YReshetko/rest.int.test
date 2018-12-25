@@ -63,7 +63,7 @@ type assertionError struct {
 }
 
 func (err assertionError) Error() string {
-	out := ""
+	out := "\n"
 	if err.reason != "" {
 		out = out + "Reason: " + err.reason + ";\n"
 	}

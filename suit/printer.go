@@ -37,7 +37,7 @@ func (p *consolePrinter) Print(result *Result) {
 		return
 	}
 	suitResult := result.SuitResult
-	p.p(suitResult.TotalResult.String())
+	p.p(suitResult.Description)
 
 	testNumber := len(suitResult.TestResults)
 	successTestNumber := 0
@@ -50,7 +50,7 @@ func (p *consolePrinter) Print(result *Result) {
 			}
 		}
 	}
-	p.pf("Result -> %s, %b/%b\n", suitResult.TotalResult, successTestNumber, testNumber)
+	p.pf("Result -> %s, %d/%d\n", suitResult.TotalResult.String(), successTestNumber, testNumber)
 	if p.debug {
 		p.tab()
 		p.printSuitDetails(suitResult.TestResults)
@@ -60,12 +60,12 @@ func (p *consolePrinter) Print(result *Result) {
 
 func (p *consolePrinter) printSuitDetails(testResults []*TestResult) {
 	for _, r := range testResults {
-		p.pf("[%b] %s: %s;\n", r.Index, r.TotalResult, r.Label)
-		p.pf("Running time: %b;\n", r.ExecutionTime.Seconds())
+		p.pf("[SUIT - %d] %s: %s;\n", r.Index, r.TotalResult.String(), r.Label)
+		p.pf("Running time: %fsec;\n", r.ExecutionTime.Seconds())
 		if !r.TotalResult {
 			for _, a := range r.AssertionResults {
 				p.tab()
-				p.pf("[%b] %s", a.Index, a.Result.String())
+				p.pf("[ASSERT - %d] %s", a.Index, a.Result.String())
 				if a.Err != nil {
 					p.p("Error: ", a.Err.Error())
 				}
@@ -85,10 +85,14 @@ func (p *consolePrinter)stab()  {
 
 func (p *consolePrinter)pf(pattern string, values ...interface{})  {
 	format := p.printPrefix + pattern
-	log.Printf(format, values)
+	log.Printf(format, values...)
 }
 
 func (p *consolePrinter)p(pattern string, values ...interface{})  {
 	format := p.printPrefix + pattern
-	log.Println(format, values)
+	out := []interface{}{format}
+	if len(values) > 0 {
+		out = append(out, values...)
+	}
+	log.Println(out...)
 }

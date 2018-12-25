@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/YReshetko/rest.int.test/util"
+	"log"
 	"os/exec"
 	"strings"
 	"time"
@@ -76,6 +77,7 @@ func parseArgs(argsLine string) []string {
 }
 
 func parseCurlOutput(out string) (header, body map[string]string) {
+	//log.Println(out)
 	lines := strings.Split(out, "\r\n")
 	/*for i, l := range lines{
 		fmt.Printf("Line[%d]:%s\n", i, l)
@@ -99,8 +101,18 @@ func parseCurlOutput(out string) (header, body map[string]string) {
 	}
 	// TODO implement GOOD body parsing with error handling
 	bodyStr := strings.TrimSpace(fmt.Sprintf("%s", lines[index:]))
-	bodyInitMap := map[string]interface{}{}
-	if err := json.Unmarshal([]byte(bodyStr), &bodyInitMap); err != nil {
+	firstBracketIndex := strings.Index(bodyStr, "{")
+	lastBracketIndex := strings.LastIndex(bodyStr, "}")
+	if  firstBracketIndex == -1 || lastBracketIndex == -1 {
+		log.Println("No json body into response")
+		return
+	}
+
+	bodyStr = bodyStr[firstBracketIndex: lastBracketIndex + 1]
+	bodyInitMap := make(map[string]interface{})
+	data := []byte(bodyStr)
+	if err := json.Unmarshal(data, &bodyInitMap); err != nil {
+		log.Println(err)
 		panic("Can not unmarshal body")
 	}
 	potentialBody, err := util.Parse(bodyInitMap)
