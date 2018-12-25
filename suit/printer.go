@@ -1,13 +1,12 @@
-package util
+package suit
 
 import (
-	"github.com/YReshetko/rest.int.test/suit"
 	"log"
 )
 
 type ResultPrinter interface {
-	Print(result *suit.Result)
-	PrintAll(results []*suit.Result)
+	Print(result *Result)
+	PrintAll(results []*Result)
 }
 type htmlPrinter struct {
 }
@@ -23,7 +22,7 @@ func GetPrinter(debug, html bool) ResultPrinter {
 	return &consolePrinter{debug, ""}
 }
 
-func (p *consolePrinter) PrintAll(results []*suit.Result) {
+func (p *consolePrinter) PrintAll(results []*Result) {
 	for _, r := range results {
 		p.tab()
 		p.Print(r)
@@ -31,7 +30,7 @@ func (p *consolePrinter) PrintAll(results []*suit.Result) {
 	}
 }
 
-func (p *consolePrinter) Print(result *suit.Result) {
+func (p *consolePrinter) Print(result *Result) {
 	p.p("--- TEST SUIT file -> ", result.FileName, " ---")
 	if result.Err != nil {
 		p.p("Error -> ", result.Err)
@@ -59,7 +58,7 @@ func (p *consolePrinter) Print(result *suit.Result) {
 	}
 }
 
-func (p *consolePrinter) printSuitDetails(testResults []*suit.TestResult) {
+func (p *consolePrinter) printSuitDetails(testResults []*TestResult) {
 	for _, r := range testResults {
 		p.pf("[%b] %s: %s;\n", r.Index, r.TotalResult, r.Label)
 		p.pf("Running time: %b;\n", r.ExecutionTime.Seconds())

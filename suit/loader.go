@@ -1,4 +1,4 @@
-package util
+package suit
 
 import (
 	"encoding/json"
@@ -7,12 +7,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"github.com/YReshetko/rest.int.test/suit"
 )
 
 type SuitIterator interface {
 	HasNext()bool
-	Next() (suit *suit.Suit, fileName string)
+	Next() (suit *Suit, fileName string)
 }
 
 
@@ -33,7 +32,7 @@ type loadedSuits struct {
 func (s *loadedSuits)HasNext() bool {
 	return s.index < len(s.files)
 }
-func (s *loadedSuits)Next() (*suit.Suit, string) {
+func (s *loadedSuits)Next() (*Suit, string) {
 	file := s.files[s.index]
 	s.index++
 	nextSuit, err := load(file.String())
@@ -76,13 +75,13 @@ func keyPath(path string) string {
 	return fmt.Sprintf("%s%s%s", exePath, "/", path)
 }
 
-func load(fileName string) (*suit.Suit, error) {
+func load(fileName string) (*Suit, error) {
 	file, ok := ioutil.ReadFile(fileName)
 	if ok != nil {
 		err := errors.New("Can't load" + fileName)
 		return nil, err
 	}
-	s := new(suit.Suit)
+	s := new(Suit)
 	err := json.Unmarshal(file, s)
 	return s, err
 }
