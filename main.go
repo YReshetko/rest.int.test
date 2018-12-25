@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"github.com/YReshetko/rest.int.test/suit"
-	"github.com/YReshetko/rest.int.test/util"
 )
 
 var (
@@ -22,8 +21,8 @@ func init() {
 }
 
 func main() {
-	suitesIterator := util.LoadSuits(suitsPath)
-	printer := util.GetPrinter(debug, html)
+	suitesIterator := suit.LoadSuits(suitsPath)
+	printer := suit.GetPrinter(debug, html)
 	suit.Run(suitesIterator, printer)
 	//printer.PrintAll(results)
 }
