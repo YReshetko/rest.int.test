@@ -13,9 +13,6 @@ type curlRunner struct {
 
 func (curlRunner)Run(command string) (head, body map[string]string){
 	args := parseArgs(command)
-	/*for i, arg := range args{
-		fmt.Printf("Arg[%d] = %s\n", i, arg)
-	}*/
 	cmd := exec.Command("curl", args...)
 	out, err := cmd.Output()
 	if err != nil {
@@ -24,8 +21,6 @@ func (curlRunner)Run(command string) (head, body map[string]string){
 	}
 	output := string(out)
 	//fmt.Println(output)
-
-	// TODO extract body and populate it into var scope
 	head, body = parseCurlOutput(output)
 	return
 }

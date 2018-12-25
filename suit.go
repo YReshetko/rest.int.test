@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/YReshetko/rest.int.test/util"
+	"github.com/pkg/errors"
 	"strings"
 )
 
@@ -95,18 +96,18 @@ func (s requestSender) GetRunner() TestRunner {
 	}
 }
 
-func (s Suit) Run() *SuitResult {
+func (s Suit) Run() (*SuitResult, error) {
 	if s.Tests == nil || len(s.Tests) == 0 {
-		panic("Test suit doesn't contain any int-test")
+		return nil, errors.New("Test suit doesn't contain any int-test")
 	}
 
 	scope, err := util.Parse(s.Vars)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	scope, err = util.Resolve(scope)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	commandRunner := s.Executor.GetRunner()
 	testResults := make([]*TestResult, len(s.Tests))
@@ -144,7 +145,7 @@ func (s Suit) Run() *SuitResult {
 		Description: s.Description,
 		TestResults: testResults,
 		TotalResult: assertionStatus(suitTotalResult),
-	}
+	}, nil
 }
 
 func (e Extract) process(scope, head, body map[string]string) {
