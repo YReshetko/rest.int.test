@@ -9,6 +9,8 @@ rebuild-debug:
 	go build -o run
 	./run -suits test -debug
 	rm -f run
+run-test:
+	go test ./...
 
 # Create the Docker image with the latest tag.
 .PHONY: latest
