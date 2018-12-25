@@ -23,7 +23,7 @@ func init() {
 
 func main() {
 	suitesIterator := util.LoadSuits(suitsPath)
-	results := suit.Run(suitesIterator)
 	printer := util.GetPrinter(debug, html)
-	printer.PrintAll(results)
+	suit.Run(suitesIterator, printer)
+	//printer.PrintAll(results)
 }

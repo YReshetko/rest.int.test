@@ -8,12 +8,14 @@ type Result struct {
 	Err        error
 }
 
-func Run(iterator util.SuitIterator) []*Result {
+func Run(iterator util.SuitIterator, printer util.ResultPrinter) []*Result {
 	results := []*Result{}
 	for iterator.HasNext() {
 		suit, fileName := iterator.Next()
 		result, err := suit.Run()
-		results = append(results, &Result{result, fileName, err})
+		res := &Result{result, fileName, err}
+		results = append(results, res)
+		printer.Print(res)
 	}
 	return results
 }
