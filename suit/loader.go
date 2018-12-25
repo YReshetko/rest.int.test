@@ -45,13 +45,13 @@ func (s *loadedSuits)Next() (*Suit, string) {
 
 func LoadSuits(basePath string) SuitIterator {
 	return &loadedSuits{
-		extractAllFilesRecursively(basePath),
+		extractAllFilesRecursively(keyPath(basePath)),
 		0,
 	}
 }
 
 func extractAllFilesRecursively(basePath string) []*testFile{
-	files, err := ioutil.ReadDir(keyPath(basePath))
+	files, err := ioutil.ReadDir(basePath)
 	testFiles := []*testFile{}
 	if err != nil {
 		panic(err)
@@ -63,6 +63,7 @@ func extractAllFilesRecursively(basePath string) []*testFile{
 			testFiles = append(testFiles, &testFile{f.Name(), basePath})
 		}
 	}
+	//log.Println("Return files:", testFiles, "for base path:", basePath)
 	return testFiles
 }
 
@@ -78,7 +79,7 @@ func keyPath(path string) string {
 func load(fileName string) (*Suit, error) {
 	file, ok := ioutil.ReadFile(fileName)
 	if ok != nil {
-		err := errors.New("Can't load" + fileName)
+		err := errors.New("Can't load " + fileName + "; Origin error: " + ok.Error())
 		return nil, err
 	}
 	s := new(Suit)
