@@ -2,16 +2,20 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/YReshetko/rest.int.test/util"
 	"strings"
 )
 
 type requestSender byte
+type assertionStatus bool
 
 const (
 	CURL requestSender = iota
 	GO
+)
+const (
+	OK     assertionStatus = true
+	FAILED assertionStatus = false
 )
 
 var requestSenderStr = map[string]requestSender{
@@ -37,10 +41,35 @@ type Extract struct {
 	Variable string `json:"var"`
 }
 
+type AssertionResult struct {
+	Index  int
+	Result assertionStatus
+	Err    error
+}
+
+type TestResult struct {
+	Index            int
+	Label            string
+	AssertionResults []*AssertionResult
+	TotalResult      assertionStatus
+}
+
+type SuitResult struct {
+	Description string
+	TestResults []*TestResult
+	TotalResult assertionStatus
+}
+
+func (status assertionStatus) String() string {
+	if status {
+		return "OK"
+	}
+	return "FAILED"
+}
+
 type TestRunner interface {
 	Run(command string) (head, body map[string]string)
 }
-
 
 func (a requestSender) MarshalJSON() ([]byte, error) {
 	return json.Marshal(a)
@@ -48,14 +77,14 @@ func (a requestSender) MarshalJSON() ([]byte, error) {
 
 func (t *requestSender) UnmarshalJSON(data []byte) error {
 	var str string
-	if err := json.Unmarshal(data, &str); err!=nil{
+	if err := json.Unmarshal(data, &str); err != nil {
 		return err
 	}
 	*t = requestSenderStr[str]
 	return nil
 }
 
-func (s requestSender)GetRunner() TestRunner {
+func (s requestSender) GetRunner() TestRunner {
 	switch s {
 	case CURL:
 		return curlRunner{}
@@ -66,13 +95,13 @@ func (s requestSender)GetRunner() TestRunner {
 	}
 }
 
-func (s Suit) Run() {
+func (s Suit) Run() *SuitResult {
 	if s.Tests == nil || len(s.Tests) == 0 {
 		panic("Test suit doesn't contain any int-test")
 	}
 
 	scope, err := util.Parse(s.Vars)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	scope, err = util.Resolve(scope)
@@ -80,7 +109,9 @@ func (s Suit) Run() {
 		panic(err)
 	}
 	commandRunner := s.Executor.GetRunner()
-	for _, test := range s.Tests {
+	testResults := make([]*TestResult, len(s.Tests))
+	suitTotalResult := true
+	for i, test := range s.Tests {
 		command := filterStringWithTokens(test.Command, scope)
 		head, body := commandRunner.Run(command)
 		extracts := test.Extracts
@@ -91,16 +122,28 @@ func (s Suit) Run() {
 		}
 
 		assertions := test.Assertions
-		for _, assertion := range assertions {
+		assertionResults := make([]*AssertionResult, len(assertions))
+		testTotalResult := true
+		for i, assertion := range assertions {
 			ok, err := assertion.Assert(scope)
-			if err != nil {
-				panic(err)
+			assertionResults[i] = &AssertionResult{
+				i + 1, assertionStatus(ok), err,
 			}
-			if !ok {
-				fmt.Println("Test failed: ", test.Lable)
-				break
-			}
+			testTotalResult = ok && testTotalResult
 		}
+		testResults[i] = &TestResult{
+			Index:            i + 1,
+			Label:            test.Lable,
+			AssertionResults: assertionResults,
+			TotalResult:      assertionStatus(testTotalResult),
+		}
+		suitTotalResult = suitTotalResult && testTotalResult
+	}
+
+	return &SuitResult{
+		Description: s.Description,
+		TestResults: testResults,
+		TotalResult: assertionStatus(suitTotalResult),
 	}
 }
 

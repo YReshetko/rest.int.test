@@ -83,7 +83,7 @@ func (cond Condition) String() string {
 	out := "Condition: " + conditionNameTypes[cond.condType] + ", Expected value: " + cond.value
 	if len(cond.subConditions) > 0 {
 		out = out + ", Sub-conditions: {"
-		for _, v := range cond.subConditions{
+		for _, v := range cond.subConditions {
 			out = out + v.String() + "; "
 		}
 		out = out[:len(out)-2] + "}"
@@ -165,7 +165,7 @@ func (a Assertion) Assert(scope map[string]string) (bool, error) {
 	value, ok := scope[a.variable]
 	if !ok {
 		return false, &assertionError{
-			reason: "Variable was not found in current scope",
+			reason:          "Variable was not found in current scope",
 			checkedVariable: a.variable,
 		}
 	}
@@ -180,8 +180,8 @@ func checkConditions(value string, conditions []Condition) (bool, error) {
 		result = result && currentResult
 		if !currentResult {
 			return result, &assertionError{
-				reason: "Assertion failed",
-				actualValue: value,
+				reason:          "Assertion failed",
+				actualValue:     value,
 				failedCondition: &condition,
 			}
 		}

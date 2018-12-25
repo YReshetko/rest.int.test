@@ -376,14 +376,13 @@ func TestAssertion_Assert_Or(t *testing.T) {
 	runTest(assert, m, t, false, true)
 }
 
-
 func TestAssertion_Assert_Match(t *testing.T) {
 	assert := Assertion{
 		variable: "some-var",
 		conditions: []Condition{
 			Condition{
 				condType: match,
-				value:"\\d{3}",
+				value:    "\\d{3}",
 			},
 		},
 	}
@@ -398,7 +397,7 @@ func TestAssertion_Assert_Match(t *testing.T) {
 }
 
 func runTest(assertion Assertion, m map[string]string, t *testing.T, expected bool, expectError bool) {
-	result, err:= assertion.Assert(m)
+	result, err := assertion.Assert(m)
 	if !expectError && err != nil {
 		t.Errorf(fmt.Sprintf("Should'n be any errors like %v during assert execution\n", err))
 		t.FailNow()
