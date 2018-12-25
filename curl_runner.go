@@ -3,18 +3,21 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"os/exec"
 	"github.com/YReshetko/rest.int.test/util"
+	"os/exec"
 	"strings"
+	"time"
 )
 
 type curlRunner struct {
 }
 
-func (curlRunner)Run(command string) (head, body map[string]string){
+func (curlRunner) Run(command string) (head, body map[string]string, executionTime time.Duration) {
 	args := parseArgs(command)
 	cmd := exec.Command("curl", args...)
+	now := time.Now()
 	out, err := cmd.Output()
+	executionTime = time.Now().Sub(now)
 	if err != nil {
 		fmt.Println("Error: ", err)
 		panic(err)
@@ -72,7 +75,7 @@ func parseArgs(argsLine string) []string {
 	return args
 }
 
-func parseCurlOutput(out string) (header, body  map[string]string) {
+func parseCurlOutput(out string) (header, body map[string]string) {
 	lines := strings.Split(out, "\r\n")
 	/*for i, l := range lines{
 		fmt.Printf("Line[%d]:%s\n", i, l)

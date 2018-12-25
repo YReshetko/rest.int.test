@@ -5,6 +5,7 @@ import (
 	"github.com/YReshetko/rest.int.test/util"
 	"github.com/pkg/errors"
 	"strings"
+	"time"
 )
 
 type requestSender byte
@@ -53,6 +54,7 @@ type TestResult struct {
 	Label            string
 	AssertionResults []*AssertionResult
 	TotalResult      assertionStatus
+	ExecutionTime    time.Duration
 }
 
 type SuitResult struct {
@@ -69,7 +71,7 @@ func (status assertionStatus) String() string {
 }
 
 type TestRunner interface {
-	Run(command string) (head, body map[string]string)
+	Run(command string) (head, body map[string]string, executionTime time.Duration)
 }
 
 func (a requestSender) MarshalJSON() ([]byte, error) {
@@ -98,7 +100,7 @@ func (s requestSender) GetRunner() TestRunner {
 
 func (s Suit) Run() (*SuitResult, error) {
 	if s.Tests == nil || len(s.Tests) == 0 {
-		return nil, errors.New("Test suit doesn't contain any int-test")
+		return nil, errors.New("Test suit doesn't contain any integration test")
 	}
 
 	scope, err := util.Parse(s.Vars)
@@ -114,7 +116,7 @@ func (s Suit) Run() (*SuitResult, error) {
 	suitTotalResult := true
 	for i, test := range s.Tests {
 		command := filterStringWithTokens(test.Command, scope)
-		head, body := commandRunner.Run(command)
+		head, body, duration := commandRunner.Run(command)
 		extracts := test.Extracts
 		for _, extract := range extracts {
 			if head != nil {
@@ -137,6 +139,7 @@ func (s Suit) Run() (*SuitResult, error) {
 			Label:            test.Lable,
 			AssertionResults: assertionResults,
 			TotalResult:      assertionStatus(testTotalResult),
+			ExecutionTime:    duration,
 		}
 		suitTotalResult = suitTotalResult && testTotalResult
 	}
