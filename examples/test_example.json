@@ -1,5 +1,5 @@
 {
-  "description" : "Suit description.",
+  "description" : "Suite description.",
   "executor" : "GO",
   "vars" :  {
     "description" : "example"

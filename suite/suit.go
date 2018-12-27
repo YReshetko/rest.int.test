@@ -1,4 +1,4 @@
-package suit
+package suite
 
 import (
 	"encoding/json"
@@ -25,7 +25,7 @@ var requestSenderStr = map[string]requestSender{
 	"GO":   GO,
 }
 
-type Suit struct {
+type Suite struct {
 	Description string                 `json:"description,omitempty"`
 	Vars        map[string]interface{} `json:"vars,omitempty"`
 	Executor    requestSender          `json:"executor"`
@@ -57,7 +57,7 @@ type TestResult struct {
 	ExecutionTime    time.Duration
 }
 
-type SuitResult struct {
+type SuiteResult struct {
 	Description string
 	TestResults []*TestResult
 	TotalResult assertionStatus
@@ -98,9 +98,9 @@ func (s requestSender) GetRunner() TestRunner {
 	}
 }
 
-func (s Suit) Run() (*SuitResult, error) {
+func (s Suite) Run() (*SuiteResult, error) {
 	if s.Tests == nil || len(s.Tests) == 0 {
-		return nil, errors.New("Test suit doesn't contain any integration test")
+		return nil, errors.New("Test suite doesn't contain any integration test")
 	}
 
 	scope, err := util.Parse(s.Vars)
@@ -113,7 +113,7 @@ func (s Suit) Run() (*SuitResult, error) {
 	}
 	commandRunner := s.Executor.GetRunner()
 	testResults := make([]*TestResult, len(s.Tests))
-	suitTotalResult := true
+	suiteTotalResult := true
 	for i, test := range s.Tests {
 		command := filterStringWithTokens(test.Command, scope)
 		//log.Println("Run command:", command)
@@ -142,13 +142,13 @@ func (s Suit) Run() (*SuitResult, error) {
 			TotalResult:      assertionStatus(testTotalResult),
 			ExecutionTime:    duration,
 		}
-		suitTotalResult = suitTotalResult && testTotalResult
+		suiteTotalResult = suiteTotalResult && testTotalResult
 	}
 
-	return &SuitResult{
+	return &SuiteResult{
 		Description: s.Description,
 		TestResults: testResults,
-		TotalResult: assertionStatus(suitTotalResult),
+		TotalResult: assertionStatus(suiteTotalResult),
 	}, nil
 }
 

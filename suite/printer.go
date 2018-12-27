@@ -1,4 +1,4 @@
-package suit
+package suite
 
 import (
 	"log"
@@ -31,36 +31,36 @@ func (p *consolePrinter) PrintAll(results []*Result) {
 }
 
 func (p *consolePrinter) Print(result *Result) {
-	p.p("--- TEST SUIT file -> ", result.FileName, " ---")
+	p.p("--- TEST SUITE file -> ", result.FileName, " ---")
 	if result.Err != nil {
 		p.p("Error -> ", result.Err)
 		return
 	}
-	suitResult := result.SuitResult
-	p.p(suitResult.Description)
+	suiteResult := result.SuiteResult
+	p.p(suiteResult.Description)
 
-	testNumber := len(suitResult.TestResults)
+	testNumber := len(suiteResult.TestResults)
 	successTestNumber := 0
-	if suitResult.TotalResult {
+	if suiteResult.TotalResult {
 		successTestNumber = testNumber
 	} else {
-		for _, r := range suitResult.TestResults {
+		for _, r := range suiteResult.TestResults {
 			if r.TotalResult {
 				successTestNumber++
 			}
 		}
 	}
-	p.pf("Result -> %s, %d/%d\n", suitResult.TotalResult.String(), successTestNumber, testNumber)
+	p.pf("Result -> %s, %d/%d\n", suiteResult.TotalResult.String(), successTestNumber, testNumber)
 	if p.debug {
 		p.tab()
-		p.printSuitDetails(suitResult.TestResults)
+		p.printSuiteDetails(suiteResult.TestResults)
 		p.stab()
 	}
 }
 
-func (p *consolePrinter) printSuitDetails(testResults []*TestResult) {
+func (p *consolePrinter) printSuiteDetails(testResults []*TestResult) {
 	for _, r := range testResults {
-		p.pf("[SUIT - %d] %s: %s;\n", r.Index, r.TotalResult.String(), r.Label)
+		p.pf("[SUITE - %d] %s: %s;\n", r.Index, r.TotalResult.String(), r.Label)
 		p.pf("Running time: %fsec;\n", r.ExecutionTime.Seconds())
 		if !r.TotalResult {
 			for _, a := range r.AssertionResults {

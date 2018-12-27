@@ -20,7 +20,7 @@ To use the tool your root folder with test cases has to be in the same directory
 ```
 To run all the tests you need to call the command:
 ```
-./rest.int.test -suits test_cases
+./rest.int.test -suites test_cases
 ```
 In this case the application will scan all folders and sub folders into test_cases, collect all json files and try to run the suites inside the files if they have appropriate format
 
@@ -30,7 +30,7 @@ There is a docker image into public repository
 ```
 yrashetska/intest:latest
 ```
-It contains the latest version of the application. To run the test suits on the container you can just specify volume with mapping to  /usr/local/bin/<folder_name> in container.
+It contains the latest version of the application. To run the test suites on the container you can just specify volume with mapping to  /usr/local/bin/<folder_name> in container.
 For example:
 ```
 docker ... -v ~/go/src/project/tests:/usr/local/bin/tests ...
@@ -49,22 +49,22 @@ Also don't forget that you need to link your service to the container
 ```
 --link some-service:some-service-alias
 ```
-And the use the `some-service-alias` into test suits instead of localhost
+And the use the `some-service-alias` into test suites instead of localhost
 
 Full example of running docker:
 ```
-docker run --rm -v ~/go/src/project/tests:/usr/local/bin/tests --net app-network-dev --link some-service:some-service-alias yrashetska/intest:latest -suits tests
+docker run --rm -v ~/go/src/project/tests:/usr/local/bin/tests --net app-network-dev --link some-service:some-service-alias yrashetska/intest:latest -suites tests
 ```
 
-## Test suits
+## Test suites
 
 Basically one test suite restricted by file scope. What that means. Each file contains scope of variables and several tests. All tests in one file share the variable scope and can fill it up.
 Besides that each test contains extract section (to fill up the variables scope) and asserts section where can be checked some simple conditions within response data (which was expracted before)
 
-Let's take a look at simple suit file:
+Let's take a look at simple suite file:
 ```json
 {
-  "description" : "Suit description.",
+  "description" : "Suite description.",
   "executor" : "CURL",
   "vars" :  {
     "host" : "localhost"
@@ -93,7 +93,7 @@ This simple example contains only one test. It does GET request to localhost:808
 
 NOTE:
 - *"executor" : "CURL"* - At the moment the tool has only one implementation of the endpoints caller, it's curl (https://curl.haxx.se/)
-- *"description" : "Suit description."* - Suit description - shown on test report
+- *"description" : "Suite description."* - Suite description - shown on test report
 - *"label" : "Test label"* - Test description - shown on test report
 
 ### Variables

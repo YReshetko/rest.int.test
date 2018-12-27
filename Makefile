@@ -3,11 +3,11 @@ CUR_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 
 rebuild:
 	go build -o run
-	./run -suits test
+	./run -suites test
 	rm -f run
 rebuild-debug:
 	go build -o run
-	./run -suits test -debug
+	./run -suites test -debug
 	rm -f run
 run-test:
 	go test ./...
@@ -27,4 +27,4 @@ push-latest:
 #Use --net some_net
 #To get an access to the containers which have to be linked to the test container
 docker-test:
-	docker run --rm -v $(CURDIR)/test:/usr/local/bin/test --net some-network --link auth:auth --link gw:gw $(IMAGE_NAME) -suits test
+	docker run --rm -v $(CURDIR)/test:/usr/local/bin/test --net some-network --link auth:auth --link gw:gw $(IMAGE_NAME) -suites test

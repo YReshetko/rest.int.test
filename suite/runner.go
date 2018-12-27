@@ -1,16 +1,16 @@
-package suit
+package suite
 
 type Result struct {
-	SuitResult *SuitResult
+	SuiteResult *SuiteResult
 	FileName   string
 	Err        error
 }
 
-func Run(iterator SuitIterator, printer ResultPrinter) []*Result {
+func Run(iterator SuiteIterator, printer ResultPrinter) []*Result {
 	results := []*Result{}
 	for iterator.HasNext() {
-		suit, fileName := iterator.Next()
-		result, err := suit.Run()
+		suite, fileName := iterator.Next()
+		result, err := suite.Run()
 		res := &Result{result, fileName, err}
 		results = append(results, res)
 		printer.Print(res)

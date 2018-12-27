@@ -1,4 +1,4 @@
-package suit
+package suite
 
 import (
 	"encoding/json"
@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 )
 
-type SuitIterator interface {
+type SuiteIterator interface {
 	HasNext()bool
-	Next() (suit *Suit, fileName string)
+	Next() (suite *Suite, fileName string)
 }
 
 
@@ -24,27 +24,27 @@ func (f *testFile)String() string {
 	return fmt.Sprintf("%s/%s", f.Path, f.Name)
 }
 
-type loadedSuits struct {
+type loadedSuites struct {
 	files []*testFile
 	index int
 }
 
-func (s *loadedSuits)HasNext() bool {
+func (s *loadedSuites)HasNext() bool {
 	return s.index < len(s.files)
 }
-func (s *loadedSuits)Next() (*Suit, string) {
+func (s *loadedSuites)Next() (*Suite, string) {
 	file := s.files[s.index]
 	s.index++
-	nextSuit, err := load(file.String())
+	nextSuite, err := load(file.String())
 	if err != nil {
 		panic(err)
 	}
-	return nextSuit, file.String()
+	return nextSuite, file.String()
 }
 
 
-func LoadSuits(basePath string) SuitIterator {
-	return &loadedSuits{
+func LoadSuites(basePath string) SuiteIterator {
+	return &loadedSuites{
 		extractAllFilesRecursively(keyPath(basePath)),
 		0,
 	}
@@ -76,13 +76,13 @@ func keyPath(path string) string {
 	return fmt.Sprintf("%s%s%s", exePath, "/", path)
 }
 
-func load(fileName string) (*Suit, error) {
+func load(fileName string) (*Suite, error) {
 	file, ok := ioutil.ReadFile(fileName)
 	if ok != nil {
 		err := errors.New("Can't load " + fileName + "; Origin error: " + ok.Error())
 		return nil, err
 	}
-	s := new(Suit)
+	s := new(Suite)
 	err := json.Unmarshal(file, s)
 	return s, err
 }

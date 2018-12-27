@@ -1,4 +1,4 @@
-package suit
+package suite
 
 import (
 	"encoding/json"
