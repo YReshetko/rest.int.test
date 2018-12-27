@@ -258,6 +258,9 @@ Available assertions:
 - *and* - logical operator, all of conditions must be true
 
 # TODO:
+- [ ] Timeout before and after test run
+- [ ] Debug mode and collect all output in report
+- [ ] Executing test after user input (here can be populated some values)
 - [ ] Add filters to run only few test suites
 - [ ] Test report in HTML by flag
 - [ ] Not only curl runner (I'm not sure if it's really needed) 
