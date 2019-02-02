@@ -71,7 +71,7 @@ func (status assertionStatus) String() string {
 }
 
 type TestRunner interface {
-	Run(command string) (head, body map[string]string, executionTime time.Duration)
+	Run(command string, debug bool) (head, body map[string]string, executionTime time.Duration)
 }
 
 func (a requestSender) MarshalJSON() ([]byte, error) {
@@ -98,7 +98,7 @@ func (s requestSender) GetRunner() TestRunner {
 	}
 }
 
-func (s Suite) Run() (*SuiteResult, error) {
+func (s Suite) Run(debug bool) (*SuiteResult, error) {
 	if s.Tests == nil || len(s.Tests) == 0 {
 		return nil, errors.New("Test suite doesn't contain any integration test")
 	}
@@ -117,7 +117,7 @@ func (s Suite) Run() (*SuiteResult, error) {
 	for i, test := range s.Tests {
 		command := filterStringWithTokens(test.Command, scope)
 		//log.Println("Run command:", command)
-		head, body, duration := commandRunner.Run(command)
+		head, body, duration := commandRunner.Run(command, debug)
 		extracts := test.Extracts
 		for _, extract := range extracts {
 			if head != nil {

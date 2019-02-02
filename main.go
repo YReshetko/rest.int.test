@@ -6,14 +6,16 @@ import (
 )
 
 var (
-	debug     bool
-	suitesPath string
-	filter    string
-	html      bool
+	assertion_details bool
+	debug             bool
+	suitesPath        string
+	filter            string
+	html              bool
 )
 
 func init() {
-	flag.BoolVar(&debug, "debug", false, "Boolean flag to print test cases with more details")
+	flag.BoolVar(&assertion_details, "assertion-details", false, "Boolean flag to print test cases with more details")
+	flag.BoolVar(&debug, "debug", false, "Test tool debug mode")
 	flag.StringVar(&suitesPath, "suites", "", "Path to root folder with tests")
 	flag.StringVar(&filter, "filter", "", "Filter to select files to tests used as array via comma and can be used * as matcher")
 	flag.BoolVar(&html, "html", false, "Set the flag if you need HTML report (Not implemented)")
@@ -22,7 +24,7 @@ func init() {
 
 func main() {
 	suitesIterator := suite.LoadSuites(suitesPath)
-	printer := suite.GetPrinter(debug, html)
-	suite.Run(suitesIterator, printer)
+	printer := suite.GetPrinter(assertion_details, html)
+	suite.Run(suitesIterator, printer, debug)
 	//printer.PrintAll(results)
 }

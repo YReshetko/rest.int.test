@@ -13,9 +13,13 @@ import (
 type curlRunner struct {
 }
 
-func (curlRunner) Run(command string) (head, body map[string]string, executionTime time.Duration) {
+func (curlRunner) Run(command string, debug bool) (head, body map[string]string, executionTime time.Duration) {
 	args := parseArgs(command)
 	cmd := exec.Command("curl", args...)
+	if debug {
+		printLine := append([]string{"Command to run:\n", "curl"}, args...)
+		fmt.Println(printLine)
+	}
 	now := time.Now()
 	out, err := cmd.Output()
 	executionTime = time.Now().Sub(now)
@@ -24,7 +28,9 @@ func (curlRunner) Run(command string) (head, body map[string]string, executionTi
 		panic(err)
 	}
 	output := string(out)
-	//fmt.Println(output)
+	if debug {
+		fmt.Println("Output:\n", output)
+	}
 	head, body = parseCurlOutput(output)
 	return
 }
